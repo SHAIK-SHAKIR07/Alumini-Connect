@@ -16,6 +16,7 @@ import Networkinghub from './Alumini/Menubar/Networkinghub';
 import Portaljob from './Alumini/Menubar/Portaljob';
 import Studentdirectory from './Alumini/Menubar/Studentdirectory';
 import Reunion from './Alumini/Menubar/Reunion';
+import Requests from './Alumini/Menubar/Requests';
 
 import Smenubar from './Student/Smenubar';
 import Stprofil from './Student/Stprofil';
@@ -24,6 +25,7 @@ import Sreunion from './Student/Sreunion';
 import Sstudentdirectory from './Student/Sstudentdirectory';
 import Sportaljob from './Student/Sportaljob';
 import Snetworkinghug from './Student/Snetworkinghug';
+import Studentmenu from './Student/Studentmenu';
 
 
 const App = () => {
@@ -42,18 +44,20 @@ const App = () => {
         <Route path="/aldashboard" element={<Aldashboard />} />
         <Route path="/profil" element={<Profil />} />
         <Route path="/donation" element={<Donation />} />
-        <Route path="/feedbaack" element={<Feedback />} />
+        <Route path="/feedback" element={<Feedback />} />
         <Route path="/networkinghub" element={<Networkinghub />} />
         <Route path="/portaljob" element={<Portaljob />} />
         <Route path="/reunion" element={<Reunion/>} />
+        <Route path="/requests" element={<Requests/>} />
 
-        
         <Route path="/studentdirectory" element={<Studentdirectory/>} />
+        <Route path="/alumnidirectory" element={<Sstudentdirectory />} />
+        <Route path="/studentmenu" element={<Studentmenu />} />
+        <Route path="/editprofil" element={<Stprofil />} />
       
         <Route path="/smenubar" element={<Smenubar />} />
         <Route path="/sfeedback" element={<Sfeedback />} />
         <Route path="/sreunion" element={<Sreunion />} />
-        <Route path="/sstudentdirectory" element={<Sstudentdirectory />} />
         <Route path="/sportaljob" element={<Sportaljob />} />
         <Route path="/snetworkinghub" element={<Snetworkinghug />} />
         

@@ -7,6 +7,7 @@ const API = 'https://aluminiserver.onrender.com/api/jobs';
 const Portaljob = () => {
   const [showForm, setShowForm] = useState(false);
   const [posts, setPosts] = useState([]);
+  const [error, setError] = useState('');
 
   const [company, setCompany] = useState('');
   const [jobRole, setJobRole] = useState('');
@@ -17,13 +18,21 @@ const Portaljob = () => {
   const [jobMode, setJobMode] = useState('');
 
   const user = JSON.parse(localStorage.getItem('user'));
+  const userId = user?.uid || user?.id;
 
   // Fetch jobs posted by this alumni
   const fetchJobs = async () => {
+    if (!userId) {
+      setError('Could not identify the logged-in alumni. Please login again.');
+      console.error('No alumni user ID found in localStorage');
+      return;
+    }
+
     try {
-      const res = await axios.get(`${API}/alumni/${user.id}`); // ✅ use id, not _id
+      const res = await axios.get(`${API}/alumni/${userId}`);
       setPosts(res.data);
     } catch (err) {
+      setError('Failed to fetch jobs. Please check your connection.');
       console.error('Failed to fetch jobs:', err);
     }
   };
@@ -39,13 +48,18 @@ const Portaljob = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!userId) {
+      alert('Alumni login info is missing. Please log in again before posting a job.');
+      return;
+    }
+
     if (!company || !jobRole || !packageAmount || !skills || !description || !location || !jobMode) {
-      alert("Please fill all fields.");
+      alert('Please fill all fields.');
       return;
     }
 
     const newPost = {
-      alumniId: user.id, // ✅ use id, not _id
+      alumniId: userId,
       company: company.trim(),
       jobRole: jobRole.trim(),
       packageAmount: packageAmount.trim(),
@@ -89,10 +103,13 @@ const Portaljob = () => {
           onClick={toggleForm}
           className="add-btn"
           title={showForm ? 'Close Form' : 'Add Job Post'}
+          type="button"
         >
           +
         </button>
       </div>
+
+      {error && <p className="error-message">{error}</p>}
 
       {showForm && (
         <form onSubmit={handleSubmit} className="job-form">

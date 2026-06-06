@@ -1,40 +1,38 @@
 import React, { useState } from 'react';
 import './Studentlogin.css';
 import { useNavigate } from 'react-router-dom';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '../firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 const Studentlogin = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
-      const res = await fetch('https://aluminiserver.onrender.com/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const profileSnap = await getDoc(doc(db, 'users', user.uid));
 
-      const data = await res.json();
-      if (!res.ok) {
-        alert(data.msg || 'Login failed');
+      if (!profileSnap.exists()) {
+        alert('Student profile not found. Please signup first.');
+        setLoading(false);
         return;
       }
 
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-     console.log(data.user.typeOfUser);
-      if (data.user.typeOfUser === 'student') {
-        navigate('/studentmenu');
-      } else {
-        alert("Invalid user type");
-      }
-
+      const profileData = profileSnap.data();
+      localStorage.setItem('user', JSON.stringify({ uid: user.uid, email: user.email, ...profileData }));
+      navigate('/studentmenu');
     } catch (error) {
-      console.error("Login Error:", error);
-      alert("Something went wrong. Try again.");
+      console.error('Login Error:', error);
+      alert(error.message || 'Login failed');
+      setLoading(false);
     }
   };
 
@@ -55,7 +53,9 @@ const Studentlogin = () => {
           required
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
       </form>
     </div>
   );

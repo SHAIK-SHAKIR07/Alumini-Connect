@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FaBars, FaUserCircle } from "react-icons/fa"
 import Menu from '../Menu';
+import Logo from '../../components/Logo';
 function TopNavbar()
 {
       const [showMenu, setShowMenu] = useState(false);
@@ -13,9 +14,12 @@ function TopNavbar()
         <>
           <Menu isOpen={showMenu} onClose={() => setShowMenu(false)} />
         <header className="al-navbar">
-        <FaBars className="nav-icon" onClick={() => setShowMenu(true)} />
-        <div className="nav-title">Alumni Dashboard</div>
-        <div className="profile-dropdown">
+          <div className="al-navbar-left">
+            <FaBars className="nav-icon" onClick={() => setShowMenu(true)} />
+            <Logo text="Alumni Portal" src="/image.png" />
+          </div>
+          <div className="nav-title">Alumni Dashboard</div>
+          <div className="profile-dropdown">
           <FaUserCircle
             className="nav-icon"
             onClick={() => setShowProfileDropdown(!showProfileDropdown)}

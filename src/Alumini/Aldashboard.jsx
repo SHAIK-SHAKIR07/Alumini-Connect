@@ -6,6 +6,7 @@ import Menu from './Menu';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import TopNavbar from './Menubar/TopNavbar';
+import { getRequestsForAlumni, updateRequestStatus } from '../services/userService';
 
 const AlDashboard = () => {
   const [showMenu, setShowMenu] = useState(false);
@@ -24,8 +25,8 @@ const AlDashboard = () => {
       setUser(userData);
 
       // 🟡 Fetch dashboard data
-      fetchStats(userData.id);
-      fetchRequests(userData.id);
+      fetchStats(userData.uid);
+      fetchRequests(userData.uid);
     }
   }, [navigate]);
 
@@ -40,10 +41,20 @@ const AlDashboard = () => {
 
   const fetchRequests = async (id) => {
     try {
-      const res = await axios.get(`https://aluminiserver.onrender.com/api/alumni/requests/${id}`);
-      setStudentRequests(res.data);
+      const requests = await getRequestsForAlumni(id);
+      setStudentRequests(requests);
     } catch (err) {
       console.error("Requests fetch error:", err);
+    }
+  };
+
+  const handleRequestAction = async (requestId, status) => {
+    try {
+      await updateRequestStatus(requestId, status);
+      setStudentRequests(prev => prev.map(req => req.id === requestId ? { ...req, status } : req));
+    } catch (err) {
+      console.error('Request action error:', err);
+      alert('Unable to update request status.');
     }
   };
 
@@ -90,13 +101,19 @@ const AlDashboard = () => {
         <h2 style={{ marginTop: '2rem' }}>Student Requests</h2>
         <div className="alumni-grid">
           {studentRequests.length > 0 ? (
-            studentRequests.map((req, idx) => (
-              <div key={idx} className="student-card">
-                <h3>{req.studentId.fullName}</h3>
-                <p><strong>Email:</strong> {req.studentId.email}</p>
-                <p><strong>Batch:</strong> {req.studentId.batch}</p>
-                <button>View Profile</button>
-                <button>Accept</button>
+            studentRequests.map((req) => (
+              <div key={req.id} className="student-card">
+                <h3>{req.studentName}</h3>
+                <p><strong>Email:</strong> {req.studentEmail}</p>
+                <p><strong>Message:</strong> {req.message}</p>
+                <p><strong>Status:</strong> {req.status}</p>
+                <p><strong>Requested:</strong> {req.createdAt?.toDate ? req.createdAt.toDate().toLocaleString() : req.createdAt || 'N/A'}</p>
+                {req.status === 'pending' && (
+                  <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                    <button onClick={() => handleRequestAction(req.id, 'accepted')}>Accept</button>
+                    <button onClick={() => handleRequestAction(req.id, 'rejected')}>Reject</button>
+                  </div>
+                )}
               </div>
             ))
           ) : (

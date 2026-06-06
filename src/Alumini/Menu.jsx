@@ -7,12 +7,13 @@ const Menu = ({ isOpen, onClose }) => {
     <div className={`menu-sidebar ${isOpen ? 'open' : ''}`}>
       <button className="close-btn" onClick={onClose}>×</button>
       <ul>
-        <a href='/aldashboard'><li>Home</li></a>
-        <a href='/studentdirectory'><li>Student Directory</li></a>
-        <a href='networkinghub'><li>Networking Hub</li></a>
-        <a href='portaljob'><li>Portal Job</li></a>
-        <a href='reunion'><li>Reunion</li></a>
-        <a href='feedback'><li>Feedback</li></a>
+        <li><Link to="/aldashboard">Home</Link></li>
+        <li><Link to="/studentdirectory">Student Directory</Link></li>
+        <li><Link to="/networkinghub">Networking Hub</Link></li>
+        <li><Link to="/portaljob">Portal Job</Link></li>
+        <li><Link to="/reunion">Reunion</Link></li>
+        <li><Link to="/requests">Requests</Link></li>
+        <li><Link to="/feedback">Feedback</Link></li>
       </ul>
     </div>
   );

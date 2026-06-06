@@ -1,0 +1,136 @@
+.student-directory-page {
+  padding: 2.5rem;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+  font-family: Arial, sans-serif;
+}
+
+.student-directory-page h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #0a3d62;
+}
+
+.student-directory-page p {
+  margin-bottom: 2rem;
+  color: #4b5563;
+  max-width: 640px;
+}
+
+.directory-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.directory-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.directory-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 18px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.directory-card:hover {
+  transform: translateY(-2px);
+  background-color: #f8fbff;
+  border-color: #3b82f6;
+}
+
+.directory-card.selected {
+  border-color: #2563eb;
+  background-color: #e0f2fe;
+}
+
+.directory-card h3 {
+  margin-bottom: 0.5rem;
+  color: #1e293b;
+}
+
+.directory-card p {
+  margin: 0.45rem 0;
+  color: #334155;
+}
+
+.request-panel {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 18px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+}
+
+.request-panel h3 {
+  margin-bottom: 1rem;
+  color: #0f172a;
+}
+
+.request-panel textarea {
+  width: 100%;
+  min-height: 160px;
+  padding: 1rem;
+  border-radius: 14px;
+  border: 1px solid #cbd5e1;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  resize: vertical;
+}
+
+.request-panel button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2563eb;
+  color: white;
+  padding: 0.95rem 1.4rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.request-panel button:hover {
+  background-color: #1d4ed8;
+}
+
+.request-confirmation {
+  margin-top: 1rem;
+  color: #15803d;
+  font-weight: 600;
+}
+
+.request-history {
+  margin-top: 1.75rem;
+}
+
+.request-history h4 {
+  margin-bottom: 0.8rem;
+  color: #0f172a;
+}
+
+.request-history ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.request-history li {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid rgba(15, 23, 42, 0.05);
+}
+
+.request-history small {
+  color: #64748b;
+}

@@ -24,6 +24,12 @@ html, body, #root {
   height: 60px;
 }
 
+.al-navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .nav-icon {
   font-size: 24px;
   cursor: pointer;

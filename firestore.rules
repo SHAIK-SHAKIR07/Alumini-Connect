@@ -1,0 +1,50 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users collection - read public info, write only own profile
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Events, Jobs, Posts - read all, no writes yet (admin only)
+    match /events/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    match /jobs/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    match /posts/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    match /requests/{requestId} {
+      allow create: if request.auth != null
+        && request.resource.data.studentUid == request.auth.uid
+        && request.resource.data.studentName is string
+        && request.resource.data.studentEmail is string
+        && request.resource.data.alumniUid is string
+        && request.resource.data.alumniName is string
+        && request.resource.data.message is string
+        && request.resource.data.status == 'pending';
+
+      allow read: if request.auth != null
+        && (request.auth.uid == resource.data.alumniUid || request.auth.uid == resource.data.studentUid);
+
+      allow update: if request.auth != null
+        && (request.auth.uid == resource.data.alumniUid || request.auth.uid == resource.data.studentUid);
+
+      allow delete: if false;
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

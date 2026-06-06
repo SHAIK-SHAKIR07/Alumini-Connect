@@ -1,0 +1,21 @@
+.logo-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo-icon {
+  width: 34px;
+  height: 34px;
+}
+
+.logo-text {
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.logo-text.dark {
+  color: #004080;
+}

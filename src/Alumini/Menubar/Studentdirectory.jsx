@@ -1,86 +1,41 @@
 import React, { useState } from 'react';
 import './Studentdirectory.css';
 
-const dummyAlumni = [
-  { id: 1, name: "John Doe", role: "Software Engineer", company: "Google", email: "john@example.com" },
-  { id: 2, name: "Jane Smith", role: "Data Scientist", company: "Microsoft", email: "jane@example.com" },
-  { id: 3, name: "Rahul Kumar", role: "DevOps Engineer", company: "Amazon", email: "rahul@example.com" },
+const dummyStudents = [
+  { id: 1, name: "Priya Sharma", course: "B.Tech Computer Science", year: "2024", email: "priya@example.com" },
+  { id: 2, name: "Aman Verma", course: "BBA", year: "2023", email: "aman@example.com" },
+  { id: 3, name: "Sana Khan", course: "BCA", year: "2025", email: "sana@example.com" },
 ];
 
 const Studentdirectory = () => {
-  const [selectedAlum, setSelectedAlum] = useState(null);
-  const [message, setMessage] = useState('');
+  const [selectedStudent, setSelectedStudent] = useState(null);
   const [confirmation, setConfirmation] = useState('');
-  
-  // Store messages for each alumni by their id
-  // Format: { alumniId: [{text: 'message', timestamp: Date}, ...], ... }
-  const [messagesByAlumni, setMessagesByAlumni] = useState({});
 
-  const handleSendMessage = () => {
-    if (message.trim() && selectedAlum) {
-      // Add message to the corresponding alumni's message array
-      setMessagesByAlumni(prev => {
-        const prevMessages = prev[selectedAlum.id] || [];
-        return {
-          ...prev,
-          [selectedAlum.id]: [...prevMessages, { text: message.trim(), timestamp: new Date() }]
-        };
-      });
-
-      setConfirmation(`Message sent to ${selectedAlum.name}`);
-      setMessage('');
-    }
+  const handleConnect = (student) => {
+    setSelectedStudent(student);
+    setConfirmation(`Connection request sent to ${student.name}`);
   };
 
   return (
     <div className="student-directory-container">
-      <h2>Connect with Alumni</h2>
+      <h2>Student Directory</h2>
+      <p>Browse student profiles and connect with future professionals.</p>
 
       <div className="alumni-list">
-        {dummyAlumni.map(alum => (
-          <div
-            key={alum.id}
-            className={`alumni-card ${selectedAlum?.id === alum.id ? 'selected' : ''}`}
-            onClick={() => {
-              setSelectedAlum(alum);
-              setConfirmation('');
-              setMessage('');
-            }}
-          >
-            <h3>{alum.name}</h3>
-            <p><strong>Role:</strong> {alum.role}</p>
-            <p><strong>Company:</strong> {alum.company}</p>
+        {dummyStudents.map(student => (
+          <div key={student.id} className="alumni-card">
+            <h3>{student.name}</h3>
+            <p><strong>Course:</strong> {student.course}</p>
+            <p><strong>Year:</strong> {student.year}</p>
+            <p><strong>Email:</strong> {student.email}</p>
+            <button onClick={() => handleConnect(student)}>Connect</button>
           </div>
         ))}
       </div>
 
-      {selectedAlum && (
+      {selectedStudent && (
         <div className="message-box">
-          <h3>Message to {selectedAlum.name}</h3>
-          <textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Type your message..."
-            rows={4}
-          />
-          <button onClick={handleSendMessage}>Send</button>
-          {confirmation && <p className="confirmation">{confirmation}</p>}
-
-          {/* Display message history for selected alumni */}
-          <div className="message-history">
-            <h4>Message History:</h4>
-            {(messagesByAlumni[selectedAlum.id] || []).length === 0 && (
-              <p>No messages sent yet.</p>
-            )}
-            <ul>
-              {(messagesByAlumni[selectedAlum.id] || []).map((msg, idx) => (
-                <li key={idx}>
-                  <span>{msg.text}</span> <br />
-                  <small>{msg.timestamp.toLocaleString()}</small>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <p>{confirmation}</p>
         </div>
       )}
     </div>

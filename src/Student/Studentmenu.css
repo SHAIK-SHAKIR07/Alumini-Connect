@@ -17,6 +17,12 @@
   z-index: 1000;
 }
 
+.student-navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .nav-icon {
   font-size: 22px;
   cursor: pointer;

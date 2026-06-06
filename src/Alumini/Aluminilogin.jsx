@@ -1,47 +1,44 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Aluminilogin.css';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../firebase';
 
 const Aluminilogin = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
-      const res = await fetch('https://aluminiserver.onrender.com/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const profileSnap = await getDoc(doc(db, 'users', user.uid));
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.msg || "Login failed");
+      if (!profileSnap.exists()) {
+        alert('Alumni profile not found. Please signup first.');
+        setLoading(false);
         return;
       }
 
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-
-      if (data.user.typeOfUser === 'alumni') {
-        navigate('/aldashboard');
-      } else {
-        alert("Invalid user type for this portal");
-      }
-
+      const profileData = profileSnap.data();
+      localStorage.setItem('user', JSON.stringify({ uid: user.uid, email: user.email, ...profileData }));
+      navigate('/aldashboard');
     } catch (error) {
       console.error("Login error:", error);
-      alert("Something went wrong");
+      alert(error.message || "Login failed");
+      setLoading(false);
     }
   };
 
   return (
     <div className="alumini-login-container">
-      <h1>Alumni Portal</h1>
+      <h1>Alumini Portal</h1>
 
       <form className="alumini-login-form" onSubmit={handleLogin}>
         <h2>Alumni Login</h2>
@@ -57,7 +54,9 @@ const Aluminilogin = () => {
           required
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
       </form>
     </div>
   );

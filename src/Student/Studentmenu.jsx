@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { FaBars, FaUserCircle } from 'react-icons/fa';
 import './Studentmenu.css';
+import Logo from '../components/Logo';
 import Smenubar from './Smenubar';
 import { useNavigate } from 'react-router-dom';
 import jayaramImg from '../assets/jayaram.jpg';
 import sanjayImg from '../assets/sanjay.jpg';
 import pavanImg from '../assets/pavan.jpg';
-import rameshImg from '../assets/ramesh.jpg';
+import shakirImg from '../assets/shakir.jpeg';
 import giriImg from '../assets/giri.jpg';
 import raviImg from '../assets/ravi.jpg';
 
@@ -19,7 +20,7 @@ const Studentmenu = () => {
   { name: "jayaram", role: "CEO", company: "JC pvt lmt", photo: jayaramImg },
   { name: "sanjay", role: "Junior Chapri", company: "Bhoran", photo: sanjayImg },
   { name: "Pavan", role: "govt_job", company: "chepurukatta", photo: pavanImg },
-  { name: "Ramesh", role: "manager", company: "JC pvt lmt", photo: rameshImg },
+  { name: "Shakir", role: "manager", company: "JC pvt lmt", photo: shakirImg },
   { name: "giri", role: "senior chapri", company: "bhoran", photo: giriImg },
   { name: "Ravi", role: "senior bomb maker", company: "auto bomb", photo: raviImg },
 ];
@@ -32,13 +33,20 @@ const Studentmenu = () => {
     navigate('/editprofil'); // Navigate to Edit Profile page
   };
 
+  const handleFeedback = () => {
+    navigate('/sfeedback');
+  };
+
   return (
     <div className="student-dashboard">
       <Smenubar isOpen={showMenu} onClose={() => setShowMenu(false)} />
 
       {/* Navbar */}
       <header className="student-navbar">
-        <FaBars className="nav-icon" onClick={() => setShowMenu(true)} />
+          <div className="student-navbar-left">
+          <FaBars className="nav-icon" onClick={() => setShowMenu(true)} />
+          <Logo text="Student Portal" src="/image copy.png" />
+        </div>
         <div className="nav-title">Student Dashboard</div>
         <div className="profile-dropdown">
           <FaUserCircle
@@ -48,12 +56,16 @@ const Studentmenu = () => {
           {showProfileDropdown && (
             <div className="dropdown-menu">
               <button onClick={handleEditProfile}>Edit Profile</button>
+              <button onClick={handleFeedback}>Give Feedback</button>
               <button onClick={handleLogout}>Logout</button>
             </div>
           )}
         </div>
       </header>
-
+      
+      <div style={{ padding: '0 32px 24px' }}>
+        <button className="form-button" onClick={handleFeedback}>Give Feedback</button>
+      </div>
       {/* Alumni List */}
       <main className="student-main">
         <h2>All Registered Alumni</h2>

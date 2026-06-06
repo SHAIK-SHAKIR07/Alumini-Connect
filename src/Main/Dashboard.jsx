@@ -6,7 +6,7 @@ const Dashboard = () => {
     <div className="dashboard-container">
       <div className="header">
         <div className="left-section">
-          <img src="http://127.0.0.1:5500/images/logo.jpg" alt="Logo" className="logo" />
+          <img src="/image.png" alt="Logo" className="logo" />
           <h1 className="title">Connect Alumini</h1>
         </div>
         <div className="right-section">

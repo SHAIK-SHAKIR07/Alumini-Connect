@@ -13,7 +13,7 @@ const Login = () => {
 
           <h2>Student</h2>
             <img
-              src="/image copy.png" // 🔁 Replace with actual logo path
+              src="/image copy.png"
               alt="Student Logo"
               className="login-logo"
             />
@@ -27,7 +27,7 @@ const Login = () => {
 
             <h2>Alumni</h2>
             <img
-              src="image.png" 
+              src="/image.png"
               alt="Alumni Logo"
               className="login-logo"
             />

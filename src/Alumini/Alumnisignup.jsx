@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import './Alumnisignup.css';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { setDoc, doc } from 'firebase/firestore';
+import { auth, db } from '../firebase';
 
 const Alumnisignup = () => {
   const [formData, setFormData] = useState({
@@ -13,49 +16,49 @@ const Alumnisignup = () => {
     currentRole: '',
     companyName: ''
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.placeholder]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    if (formData.Password !== formData['Confirm Password']) {
+    if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
+      setLoading(false);
       return;
     }
 
     try {
-      const res = await fetch('https://aluminiserver.onrender.com/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fullName: formData['Full Name'],
-          email: formData['Email'],
-          password: formData['Password'],
-          regdNumber: formData['Regd Number'],
-          collegeName: formData['College Name'],
-          batch: formData['Batch (e.g., 2018–2022)'],
-          currentRole: formData['Role (e.g., Developer)'],
-          companyName: formData['Company Name'],
-          typeOfUser: 'alumni'
-        })
-      });
+      // Create user with Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      const user = userCredential.user;
 
-      const data = await res.json();
-      if (!res.ok) {
-        alert(data.msg || "Registration failed");
-        return;
-      }
+      // Save profile to Firestore
+      const profileData = {
+        fullName: formData.fullName,
+        email: formData.email,
+        regdNumber: formData.regdNumber,
+        collegeName: formData.collegeName,
+        batch: formData.batch,
+        currentRole: formData.currentRole,
+        companyName: formData.companyName,
+        typeOfUser: 'alumni',
+        createdAt: new Date()
+      };
 
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      await setDoc(doc(db, 'users', user.uid), profileData);
 
+      localStorage.setItem('user', JSON.stringify({ uid: user.uid, ...profileData }));
       window.location.href = '/aldashboard';
     } catch (err) {
       console.error("Signup Error:", err);
-      alert("Something went wrong. Try again.");
+      alert(err.message || "Something went wrong. Try again.");
+      setLoading(false);
     }
   };
 
@@ -64,16 +67,18 @@ const Alumnisignup = () => {
       <h1>Alumni Signup</h1>
 
       <form className="alumni-signup-form" onSubmit={handleSubmit}>
-        <input type="text" placeholder="Full Name" required onChange={handleChange} />
-        <input type="email" placeholder="Email" required onChange={handleChange} />
-        <input type="password" placeholder="Password" required onChange={handleChange} />
-        <input type="password" placeholder="Confirm Password" required onChange={handleChange} />
-        <input type="text" placeholder="Regd Number" required onChange={handleChange} />
-        <input type="text" placeholder="College Name" required onChange={handleChange} />
-        <input type="text" placeholder="Batch (e.g., 2018–2022)" required onChange={handleChange} />
-        <input type="text" placeholder="Role (e.g., Developer)" required onChange={handleChange} />
-        <input type="text" placeholder="Company Name" required onChange={handleChange} />
-        <button type="submit">Signup</button>
+        <input type="text" name="fullName" placeholder="Full Name" required onChange={handleChange} />
+        <input type="email" name="email" placeholder="Email" required onChange={handleChange} />
+        <input type="password" name="password" placeholder="Password" required onChange={handleChange} />
+        <input type="password" name="confirmPassword" placeholder="Confirm Password" required onChange={handleChange} />
+        <input type="text" name="regdNumber" placeholder="Regd Number" required onChange={handleChange} />
+        <input type="text" name="collegeName" placeholder="College Name" required onChange={handleChange} />
+        <input type="text" name="batch" placeholder="Batch (e.g., 2018–2022)" required onChange={handleChange} />
+        <input type="text" name="currentRole" placeholder="Role (e.g., Developer)" required onChange={handleChange} />
+        <input type="text" name="companyName" placeholder="Company Name" required onChange={handleChange} />
+        <button type="submit" disabled={loading}>
+          {loading ? 'Signing up...' : 'Signup'}
+        </button>
       </form>
     </div>
   );
